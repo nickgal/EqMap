@@ -17,7 +17,8 @@ public partial class MapView : Canvas
         InitializeComponent();
 
         _mapLoader = new MapLoader(@"C:\Code\EqMap\Maps");
-        LoadMap("airplane");
+        LoadMap("airplane"); // two layers
+        // LoadMap("bazaar"); // single layer mixed
     }
 
     public void LoadMap(string mapName)
@@ -29,8 +30,12 @@ public partial class MapView : Canvas
             return;
         }
 
-        var geometryLayer = _map.Layers[0];
-        RenderLayer(geometryLayer);
+        Children.Clear();
+
+        foreach (var layer in _map.Layers)
+        {
+            RenderLayer(layer);
+        }
     }
 
     private void RenderLayer(Layer layer)
@@ -44,6 +49,31 @@ public partial class MapView : Canvas
                 EndPoint = new Point(lineElement.End.X, lineElement.End.Y),
                 Stroke = new SolidColorBrush(color),
             });
+        }
+
+        foreach (var labelElement in layer.Elements.OfType<Label>())
+        {
+            var size = labelElement.Size + 10;
+            var color = Color.FromUInt32((uint)labelElement.Color.ToArgb());
+            var circle = new Avalonia.Controls.Shapes.Ellipse
+            {
+                Width = size,
+                Height = size,
+                Fill = new SolidColorBrush(color),
+            };
+            SetTop(circle, labelElement.Position.Y);
+            SetLeft(circle, labelElement.Position.X);
+            Children.Add(circle);
+
+            var textBlock = new TextBlock
+            {
+                Text = labelElement.Text.Replace('_', ' '),
+                Foreground = new SolidColorBrush(color),
+                FontSize = size,
+            };
+            SetTop(textBlock, labelElement.Position.Y - 5);
+            SetLeft(textBlock, labelElement.Position.X + 15);
+            Children.Add(textBlock);
         }
     }
 }
