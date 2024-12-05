@@ -2,9 +2,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:paz="using:Avalonia.Controls.PanAndZoom"
         xmlns:views="clr-namespace:EqMap.Gui.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="EqMap.Gui.Views.MainWindow"
         Title="EqMap.Gui">
-        <views:MapView />
+        <paz:ZoomBorder Name="ZoomBorder" Stretch="None" ZoomSpeed="1.2"
+                        Background="DarkSlateGray" ClipToBounds="True" Focusable="True"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <views:MapView />
+        </paz:ZoomBorder>
 </Window>
